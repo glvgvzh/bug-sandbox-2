@@ -448,6 +448,10 @@ footer {
 }
 
 .event-card h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   height: 58px;
   margin: 0 0 16px;
   overflow: hidden;
