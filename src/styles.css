@@ -276,8 +276,8 @@ footer {
   gap: 7px;
 }
 
-.search-field span,
-.select-field span {
+.search-field label,
+.select-field label {
   color: var(--muted);
   font-size: 11px;
   font-weight: 700;

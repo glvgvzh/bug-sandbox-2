@@ -14,8 +14,9 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
   return (
     <section className="filters" aria-label="Фильтры событий">
       <div className="search-field">
-        <span>Поиск</span>
+        <label htmlFor="search-field">Поиск</label>
         <input
+          id="search-field"
           type="search"
           placeholder="Событие или площадка"
           value={filters.query}
@@ -35,8 +36,9 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
 
       <div className={`filter-controls ${isOpen ? 'is-open' : ''}`}>
         <div className="select-field">
-          <span>Категория</span>
+          <label htmlFor="category-filter">Категория</label>
           <select
+            id="category-filter"
             value={filters.category}
             onChange={(event) =>
               onChange({ ...filters, category: event.target.value as EventFilters['category'] })
@@ -52,8 +54,9 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
         </div>
 
         <div className="select-field">
-          <span>Когда</span>
+          <label htmlFor="date-filter">Когда</label>
           <select
+            id="date-filter"
             value={filters.date}
             onChange={(event) =>
               onChange({ ...filters, date: event.target.value as EventFilters['date'] })
