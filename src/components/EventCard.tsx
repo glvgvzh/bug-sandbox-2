@@ -35,7 +35,10 @@ export function EventCard({ event, isSaved, onOpen, onToggleSaved, onShare }: Ev
             aria-label={
               isSaved ? `Убрать ${event.title} из сохранённых` : `Сохранить ${event.title}`
             }
-            onClick={() => onToggleSaved(event.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSaved(event.id);
+            }}
           >
             <Bookmark size={19} fill={isSaved ? 'currentColor' : 'none'} />
           </button>
@@ -43,7 +46,10 @@ export function EventCard({ event, isSaved, onOpen, onToggleSaved, onShare }: Ev
             className="icon-button"
             type="button"
             aria-label={`Поделиться событием ${event.title}`}
-            onClick={() => onShare(event)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onShare(event);
+            }}
           >
             <Share2 size={19} />
           </button>
