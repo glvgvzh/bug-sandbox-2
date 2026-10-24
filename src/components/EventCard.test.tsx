@@ -55,4 +55,26 @@ describe('EventCard', () => {
 
     expect(onToggleSaved).toHaveBeenCalledWith(seedEvents[0].id);
   });
+
+  it('быстрые действия не открывают подробности события', async () => {
+    const user = userEvent.setup();
+    const onOpen = vi.fn();
+    const onToggleSaved = vi.fn();
+    const onShare = vi.fn();
+    render(
+      <EventCard
+        event={seedEvents[0]}
+        isSaved={false}
+        onOpen={onOpen}
+        onToggleSaved={onToggleSaved}
+        onShare={onShare}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /Сохранить/ }));
+    expect(onToggleSaved).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('button', { name: /Поделиться событием/ }));
+    expect(onShare).toHaveBeenCalledTimes(1);
+    expect(onOpen).not.toHaveBeenCalled();
+  });
 });
