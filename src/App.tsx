@@ -45,7 +45,9 @@ export function App() {
         <section className="events-section" aria-labelledby="events-title">
           <div className="section-heading">
             <div>
-              <p id="events" className="eyebrow">Ближайшие события</p>
+              <p id="events" className="eyebrow">
+                Ближайшие события
+              </p>
               <h2 id="events-title">Есть планы?</h2>
             </div>
             <p>Выбирайте по настроению и сохраняйте интересное на потом.</p>
