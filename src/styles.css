@@ -835,8 +835,8 @@ footer strong {
     box-shadow: var(--shadow);
     transform: translateY(-8px);
     transition:
-      opasity 160ms,
-      ease transform 160ms ease;
+      opacity 160ms ease,
+      transform 160ms ease;
   }
 
   .filter-controls.is-open {
