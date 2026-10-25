@@ -61,7 +61,7 @@ export function EventCard({ event, isSaved, onOpen, onToggleSaved, onShare }: Ev
           <CalendarDays size={17} />
           {formatEventDate(event.startsAt)}
         </p>
-        <h2>{event.title}</h2>
+        <h2 className="text-clamp-2">{event.title}</h2>
         <p className="event-venue">
           <MapPin size={17} />
           <span>{event.venue}</span>

@@ -54,6 +54,14 @@ a {
   color: inherit;
 }
 
+.text-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
 .app-shell {
   min-height: 100vh;
 }
@@ -449,13 +457,8 @@ footer {
 }
 
 .event-card h2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
   height: 58px;
   margin: 0 0 16px;
-  overflow: hidden;
   font-size: 20px;
   letter-spacing: -0.025em;
   line-height: 1.4;
