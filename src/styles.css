@@ -819,11 +819,12 @@ footer strong {
   }
 
   .filter-controls {
+    display: grid;
+    visibility: hidden;
     position: absolute;
     z-index: 20;
     top: calc(100% + 8px);
     right: 0;
-    display: grid;
     width: 310px;
     padding: 18px;
     border: 1px solid var(--line);
@@ -833,10 +834,13 @@ footer strong {
     background: var(--paper);
     box-shadow: var(--shadow);
     transform: translateY(-8px);
-    transition: 160ms ease;
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
   }
 
   .filter-controls.is-open {
+    visibility: visible;
     pointer-events: auto;
     opacity: 1;
     transform: translateY(0);
