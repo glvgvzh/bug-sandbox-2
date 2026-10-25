@@ -83,6 +83,7 @@ a {
 
 .brand-mark {
   display: grid;
+  flex: none;
   width: 42px;
   height: 42px;
   place-items: center;
