@@ -35,6 +35,7 @@ export function EventCard({ event, isSaved, onOpen, onToggleSaved, onShare }: Ev
             aria-label={
               isSaved ? `Убрать ${event.title} из сохранённых` : `Сохранить ${event.title}`
             }
+            onKeyDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               onToggleSaved(event.id);
@@ -46,6 +47,7 @@ export function EventCard({ event, isSaved, onOpen, onToggleSaved, onShare }: Ev
             className="icon-button"
             type="button"
             aria-label={`Поделиться событием ${event.title}`}
+            onKeyDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               onShare(event);

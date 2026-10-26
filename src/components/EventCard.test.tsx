@@ -77,4 +77,42 @@ describe('EventCard', () => {
     expect(onShare).toHaveBeenCalledTimes(1);
     expect(onOpen).not.toHaveBeenCalled();
   });
+
+  it('нажатия Enter/Space на кнопках действий с клавиатуры не открывают подробности события', async () => {
+    const user = userEvent.setup();
+    const onOpen = vi.fn();
+    const onToggleSaved = vi.fn();
+    const onShare = vi.fn();
+    render(
+      <EventCard
+        event={seedEvents[0]}
+        isSaved={false}
+        onOpen={onOpen}
+        onToggleSaved={onToggleSaved}
+        onShare={onShare}
+      />,
+    );
+
+    screen.getByRole('article').focus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: /Сохранить/ })).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(onToggleSaved).toHaveBeenCalledTimes(1);
+    expect(onOpen).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: /Сохранить/ })).toHaveFocus();
+    await user.keyboard(' ');
+    expect(onToggleSaved).toHaveBeenCalledTimes(2);
+    expect(onOpen).not.toHaveBeenCalled();
+
+    screen.getByRole('button', { name: /Сохранить/ }).focus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: /Поделиться событием/ })).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(onShare).toHaveBeenCalledTimes(1);
+    expect(onOpen).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: /Поделиться событием/ })).toHaveFocus();
+    await user.keyboard(' ');
+    expect(onShare).toHaveBeenCalledTimes(2);
+    expect(onOpen).not.toHaveBeenCalled();
+  });
 });
