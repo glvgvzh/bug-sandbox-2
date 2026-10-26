@@ -29,8 +29,13 @@ export function EventDetailsDialog({
   }, [onClose]);
 
   return (
-    <div className="dialog-backdrop" onClick={onClose}>
-      <section className="event-dialog" role="dialog" aria-modal="true">
+    <div data-testid="dialog-backdrop" className="dialog-backdrop" onClick={onClose}>
+      <section
+        className="event-dialog"
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className="dialog-close" type="button" aria-label="Закрыть" onClick={onClose}>
           <X size={21} />
         </button>
