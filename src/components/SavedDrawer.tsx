@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BookmarkX, X } from 'lucide-react';
 import type { CityEvent } from '../types';
 import { formatEventDate } from '../utils/events';
@@ -11,6 +12,14 @@ type SavedDrawerProps = {
 };
 
 export function SavedDrawer({ isOpen, events, onOpenEvent, onRemove, onClose }: SavedDrawerProps) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'auto';
+      };
+    }
+  }, [isOpen]);
   return (
     <aside className={`saved-drawer ${isOpen ? 'is-open' : ''}`} aria-hidden={!isOpen}>
       <div className="drawer-heading">
