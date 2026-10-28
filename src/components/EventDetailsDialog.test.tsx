@@ -59,4 +59,46 @@ describe('EventDetailsDialog', () => {
     await user.click(screen.getByRole('button', { name: 'Закрыть' }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it('устанавливает фокус на кнопку "Сохранить" сразу при открытии окна', () => {
+    render(
+      <EventDetailsDialog
+        event={seedEvents[1]}
+        isSaved={false}
+        onToggleSaved={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Сохранить' })).toHaveFocus();
+  });
+
+  it('перемещает фокус вперед и назад только по элементам внутри окна', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <button type="button">Внешняя кнопка</button>
+        <EventDetailsDialog
+          event={seedEvents[1]}
+          isSaved={false}
+          onToggleSaved={vi.fn()}
+          onClose={vi.fn()}
+        />
+      </>,
+    );
+
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Закрыть' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Сохранить' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Закрыть' })).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Сохранить' })).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Закрыть' })).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Сохранить' })).toHaveFocus();
+  });
 });
