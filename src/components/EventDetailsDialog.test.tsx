@@ -60,6 +60,46 @@ describe('EventDetailsDialog', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('не вызывает старые реакции закрытия при закрытии окна с помощью Escape', async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    const firstDialog = render(
+      <EventDetailsDialog
+        event={seedEvents[1]}
+        isSaved={false}
+        onToggleSaved={vi.fn()}
+        onClose={onClose}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Закрыть' }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    firstDialog.unmount();
+
+    const secondDialog = render(
+      <EventDetailsDialog
+        event={seedEvents[1]}
+        isSaved={false}
+        onToggleSaved={vi.fn()}
+        onClose={onClose}
+      />,
+    );
+    await user.click(screen.getByTestId('dialog-backdrop'));
+    expect(onClose).toHaveBeenCalledTimes(2);
+    secondDialog.unmount();
+
+    render(
+      <EventDetailsDialog
+        event={seedEvents[1]}
+        isSaved={false}
+        onToggleSaved={vi.fn()}
+        onClose={onClose}
+      />,
+    );
+    await user.keyboard('{Escape}');
+    expect(onClose).toHaveBeenCalledTimes(3);
+  });
+
   it('устанавливает фокус на кнопку "Сохранить" сразу при открытии окна', () => {
     render(
       <EventDetailsDialog
