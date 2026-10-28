@@ -49,7 +49,7 @@ export function EventDetailsDialog({
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'auto';
-      window.removeEventListener('keydown', (keyboardEvent) => handleKeyDown(keyboardEvent));
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 
