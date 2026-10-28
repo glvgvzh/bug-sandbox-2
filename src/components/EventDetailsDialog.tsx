@@ -1,5 +1,5 @@
 import { Bookmark, CalendarDays, MapPin, X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type { CityEvent } from '../types';
 import { categoryLabels, formatEventDate, formatPrice } from '../utils/events';
 
@@ -16,10 +16,35 @@ export function EventDetailsDialog({
   onToggleSaved,
   onClose,
 }: EventDetailsDialogProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const previouslyFocusedElement = document.activeElement;
+    saveButtonRef.current?.focus({ preventScroll: true });
+
+    return () => {
+      if (previouslyFocusedElement instanceof HTMLElement) {
+        previouslyFocusedElement.focus({ preventScroll: true });
+      }
+    };
+  }, []);
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     function handleKeyDown(keyboardEvent: globalThis.KeyboardEvent) {
       if (keyboardEvent.key === 'Escape') onClose();
+      if (keyboardEvent.key === 'Tab') {
+        if (!keyboardEvent.shiftKey && keyboardEvent.target === saveButtonRef.current) {
+          keyboardEvent.preventDefault();
+          closeButtonRef.current?.focus();
+        }
+
+        if (keyboardEvent.shiftKey && keyboardEvent.target === closeButtonRef.current) {
+          keyboardEvent.preventDefault();
+          saveButtonRef.current?.focus();
+        }
+      }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -36,7 +61,13 @@ export function EventDetailsDialog({
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="dialog-close" type="button" aria-label="Закрыть" onClick={onClose}>
+        <button
+          className="dialog-close"
+          type="button"
+          aria-label="Закрыть"
+          onClick={onClose}
+          ref={closeButtonRef}
+        >
           <X size={21} />
         </button>
         <img className="dialog-image" src={event.imageUrl} alt={event.imageAlt} />
@@ -59,7 +90,7 @@ export function EventDetailsDialog({
           </ul>
           <div className="dialog-footer">
             <strong>{formatPrice(event.price)}</strong>
-            <button type="button" onClick={() => onToggleSaved(event.id)}>
+            <button type="button" onClick={() => onToggleSaved(event.id)} ref={saveButtonRef}>
               <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
               {isSaved ? 'Сохранено' : 'Сохранить'}
             </button>
