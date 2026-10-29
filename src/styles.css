@@ -681,6 +681,7 @@ footer strong {
 }
 
 .saved-drawer {
+  display: none;
   position: fixed;
   z-index: 100;
   top: 0;
@@ -691,11 +692,20 @@ footer strong {
   transform: translateX(100%);
   background: var(--paper);
   box-shadow: -20px 0 80px rgb(0 0 0 / 18%);
-  transition: transform 240ms ease;
+  transition:
+    transform 240ms ease,
+    display 240ms ease allow-discrete;
 }
 
 .saved-drawer.is-open {
+  display: initial;
   transform: translateX(0);
+}
+
+@starting-style {
+  .saved-drawer.is-open {
+    transform: translateX(100%);
+  }
 }
 
 .drawer-backdrop {
