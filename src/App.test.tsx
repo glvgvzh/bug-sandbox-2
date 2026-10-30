@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from './App';
@@ -10,6 +10,9 @@ vi.mock('./services/eventsApi', () => ({
 }));
 
 describe('App', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
   it('возвращает фокус на карточку после закрытия окна подробностей события', async () => {
     vi.mocked(fetchEvents).mockResolvedValue(
       seedEvents.map((event) => ({ ...event, tags: [...event.tags] })),
@@ -68,5 +71,69 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Сохранено' })).toHaveFocus();
     await user.click(screen.getByRole('button', { name: 'Закрыть' }));
     expect(savedButton).toHaveFocus();
+  });
+
+  it('ловит ошибку записи в буфер обмена и показывает тост об ошибке', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValue(
+      new Error('Ошибка записи в буфер обмена'),
+    );
+
+    render(<App />);
+
+    await user.click(
+      await screen.findByRole('button', { name: `Поделиться событием ${seedEvents[0].title}` }),
+    );
+    expect(await screen.findByText('Ошибка копирования ссылки')).toBeInTheDocument();
+  });
+
+  it('ловит ошибку при отсутствии clipboard API и показывает тост об ошибке', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(navigator, 'clipboard', 'get').mockReturnValue(undefined as unknown as Clipboard);
+
+    render(<App />);
+
+    await user.click(
+      await screen.findByRole('button', { name: `Поделиться событием ${seedEvents[0].title}` }),
+    );
+    expect(await screen.findByText('Ошибка копирования ссылки')).toBeInTheDocument();
+  });
+
+  it('показывает информационный тост при успешном копировании в буфер обмена', async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      await screen.findByRole('button', { name: `Поделиться событием ${seedEvents[0].title}` }),
+    );
+    expect(await screen.findByText('Ссылка скопирована')).toBeInTheDocument();
+    expect(await navigator.clipboard.readText()).toBe(
+      `${seedEvents[0].title} — ${window.location.href}`,
+    );
+  });
+
+  it('после неудачной попытки записи в буфер обмена следующая попытка работает нормально', async () => {
+    const user = userEvent.setup();
+    const writeTextSpy = vi
+      .spyOn(navigator.clipboard, 'writeText')
+      .mockRejectedValue(new Error('Ошибка записи в буфер обмена'));
+
+    render(<App />);
+
+    await user.click(
+      await screen.findByRole('button', { name: `Поделиться событием ${seedEvents[0].title}` }),
+    );
+    expect(await screen.findByText('Ошибка копирования ссылки')).toBeInTheDocument();
+
+    writeTextSpy.mockRestore();
+
+    await user.click(
+      await screen.findByRole('button', { name: `Поделиться событием ${seedEvents[0].title}` }),
+    );
+    expect(await screen.findByText('Ссылка скопирована')).toBeInTheDocument();
+    expect(await navigator.clipboard.readText()).toBe(
+      `${seedEvents[0].title} — ${window.location.href}`,
+    );
   });
 });
