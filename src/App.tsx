@@ -16,8 +16,12 @@ export function App() {
   const [toast, setToast] = useState<string | null>(null);
 
   async function shareEvent(event: CityEvent) {
-    await navigator.clipboard.writeText(`${event.title} — ${window.location.href}`);
-    setToast('Ссылка скопирована');
+    try {
+      await navigator.clipboard.writeText(`${event.title} — ${window.location.href}`);
+      setToast('Ссылка скопирована');
+    } catch {
+      setToast('Ошибка копирования ссылки');
+    }
   }
 
   return (
