@@ -8,7 +8,8 @@ type ToastProps = {
 
 export function Toast({ message, onClose }: ToastProps) {
   useEffect(() => {
-    window.setTimeout(onClose, 2800);
+    const timer = window.setTimeout(onClose, 2800);
+    return () => clearTimeout(timer);
   }, [message, onClose]);
 
   return (
