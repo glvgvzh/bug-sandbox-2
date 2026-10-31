@@ -798,6 +798,14 @@ footer strong {
   font-weight: 700;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @media (max-width: 900px) {
   .site-header {
     grid-template-columns: 1fr auto;
