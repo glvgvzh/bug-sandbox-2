@@ -115,4 +115,21 @@ describe('EventCard', () => {
     expect(onShare).toHaveBeenCalledTimes(2);
     expect(onOpen).not.toHaveBeenCalled();
   });
+
+  it('использует ленивую загрузку изображения события', () => {
+    render(
+      <EventCard
+        event={seedEvents[0]}
+        isSaved={false}
+        onOpen={vi.fn()}
+        onToggleSaved={vi.fn()}
+        onShare={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('img', { name: seedEvents[0].imageAlt })).toHaveAttribute(
+      'loading',
+      'lazy',
+    );
+  });
 });
