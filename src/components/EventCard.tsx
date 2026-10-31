@@ -26,7 +26,7 @@ export function EventCard({ event, isSaved, onOpen, onToggleSaved, onShare }: Ev
       onKeyDown={handleKeyDown}
     >
       <div className="event-image-wrap">
-        <img className="event-image" src={event.imageUrl} alt={event.imageAlt} />
+        <img className="event-image" src={event.imageUrl} alt={event.imageAlt} loading="lazy" />
         <span className="category-badge">{categoryLabels[event.category]}</span>
         <div className="card-actions">
           <button
