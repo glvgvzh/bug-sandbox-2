@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { BookmarkX, X } from 'lucide-react';
 import type { CityEvent } from '../types';
 import { formatEventDate } from '../utils/events';
+import { useFocusManagement } from '../hooks/useFocusManagement';
 
 type SavedDrawerProps = {
   isOpen: boolean;
@@ -15,46 +16,8 @@ export function SavedDrawer({ isOpen, events, onOpenEvent, onRemove, onClose }: 
   const drawerRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      const previouslyFocusedElement = document.activeElement;
-      closeButtonRef.current?.focus({ preventScroll: true });
-      return () => {
-        if (previouslyFocusedElement instanceof HTMLElement)
-          previouslyFocusedElement.focus({ preventScroll: true });
-      };
-    }
-  }, [isOpen]);
+  useFocusManagement(drawerRef, closeButtonRef, onClose, isOpen);
 
-  useEffect(() => {
-    const allFocusableElements = document
-      .querySelector('#saved-drawer')!
-      .querySelectorAll('button');
-    const lastFocusableElement = allFocusableElements[allFocusableElements.length - 1];
-
-    function handleKeyDown(keyboardEvent: KeyboardEvent) {
-      if (keyboardEvent.key === 'Escape') onClose();
-      if (keyboardEvent.key === 'Tab') {
-        if (!keyboardEvent.shiftKey && keyboardEvent.target === lastFocusableElement) {
-          keyboardEvent.preventDefault();
-          closeButtonRef.current?.focus();
-        }
-        if (keyboardEvent.shiftKey && keyboardEvent.target === closeButtonRef.current) {
-          keyboardEvent.preventDefault();
-          lastFocusableElement.focus();
-        }
-      }
-    }
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      document.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        document.body.style.overflow = 'auto';
-        document.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [isOpen, onClose, events]);
   return (
     <aside
       aria-labelledby="saved-drawer-title"

@@ -1,7 +1,8 @@
 import { Bookmark, CalendarDays, MapPin, X } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { CityEvent } from '../types';
 import { categoryLabels, formatEventDate, formatPrice } from '../utils/events';
+import { useFocusManagement } from '../hooks/useFocusManagement';
 
 type EventDetailsDialogProps = {
   event: CityEvent;
@@ -16,42 +17,11 @@ export function EventDetailsDialog({
   onToggleSaved,
   onClose,
 }: EventDetailsDialogProps) {
+  const sectionRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const saveButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    const previouslyFocusedElement = document.activeElement;
-    saveButtonRef.current?.focus({ preventScroll: true });
-
-    return () => {
-      if (previouslyFocusedElement instanceof HTMLElement) {
-        previouslyFocusedElement.focus({ preventScroll: true });
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    function handleKeyDown(keyboardEvent: globalThis.KeyboardEvent) {
-      if (keyboardEvent.key === 'Escape') onClose();
-      if (keyboardEvent.key === 'Tab') {
-        if (!keyboardEvent.shiftKey && keyboardEvent.target === saveButtonRef.current) {
-          keyboardEvent.preventDefault();
-          closeButtonRef.current?.focus();
-        }
-
-        if (keyboardEvent.shiftKey && keyboardEvent.target === closeButtonRef.current) {
-          keyboardEvent.preventDefault();
-          saveButtonRef.current?.focus();
-        }
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = 'auto';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
+  useFocusManagement(sectionRef, saveButtonRef, onClose);
 
   return (
     <div data-testid="dialog-backdrop" className="dialog-backdrop" onClick={onClose}>
@@ -60,6 +30,7 @@ export function EventDetailsDialog({
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
+        ref={sectionRef}
       >
         <button
           className="dialog-close"
